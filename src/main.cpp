@@ -7,6 +7,7 @@
 #include "../include/imgui_impl_sdl.h"
 #include "../include/imgui_impl_opengl3.h"
 #include <stdio.h>
+#include <string>
 #include <SDL.h>
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <SDL_opengles2.h>
@@ -120,15 +121,27 @@ int main(int, char**)
         ImGui::NewFrame();
 
         // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
-        /*
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
-        */
-
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
+        static char str0[128] = "";
+        static char name[128] = "";
+
         {
           ImGui::Begin("My First Window!");
           ImGui::Text("Hello, world!");
+          ImGui::InputText("Name", str0, IM_ARRAYSIZE(str0));
+          if (ImGui::Button("Submit"))
+          {
+            strncpy(name, str0, 128);
+            strncpy(str0, "", 128);
+          }
+
+          ImGui::End();
+        }
+        {
+          ImGui::Begin("My Second Window!");
+          ImGui::Text("%s", name);
           ImGui::End();
         }
 
