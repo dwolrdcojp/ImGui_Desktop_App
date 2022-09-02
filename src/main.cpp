@@ -6,8 +6,12 @@
 #include "../include/imgui.h"
 #include "../include/imgui_impl_sdl.h"
 #include "../include/imgui_impl_opengl3.h"
+#include "../include/ContactManager.h"
+#include "../include/Contact.h"
 #include <stdio.h>
 #include <string>
+#include <iostream>
+#include <fstream>
 #include <SDL.h>
 #if defined(IMGUI_IMPL_OPENGL_ES2)
 #include <SDL_opengles2.h>
@@ -124,25 +128,76 @@ int main(int, char**)
         if (show_demo_window)
             ImGui::ShowDemoWindow(&show_demo_window);
         // 2. Show a simple window that we create ourselves. We use a Begin/End pair to created a named window.
-        static char str0[128] = "";
-        static char name[128] = "";
+        static char first[128] = "";
+        static char last[128] = "";
+        static char num[128] = "";
+        static char email[128] = "";
+        static ContactManager* contacts = new ContactManager();
 
         {
           ImGui::Begin("My First Window!");
           ImGui::Text("Hello, world!");
-          ImGui::InputText("Name", str0, IM_ARRAYSIZE(str0));
+          ImGui::InputText("First Name", first, IM_ARRAYSIZE(first));
+          ImGui::InputText("Last Name", last, IM_ARRAYSIZE(last));
+          ImGui::InputText("Phone Number", num, IM_ARRAYSIZE(num));
+          ImGui::InputText("E-mail", email, IM_ARRAYSIZE(email));
           if (ImGui::Button("Submit"))
           {
-            strncpy(name, str0, 128);
-            strncpy(str0, "", 128);
+           
+            Contact* contact = new Contact(first, last, num, email);
+            contacts->addContact(contact);
+
+            strncpy(first, "", 128);
+            strncpy(last, "", 128);
+            strncpy(num, "", 128);
+            strncpy(email, "", 128);
           }
 
           ImGui::End();
         }
+
+        static char ls0[1024] = "";
+        std::system("ls > test.txt");
+        std::ifstream fstream("test.txt");
+        if(fstream.is_open())
         {
-          ImGui::Begin("My Second Window!");
-          ImGui::Text("%s", name);
-          ImGui::End();
+          fstream >> ls0;
+        }
+
+        {
+          ImGui::Begin("My Second Window!"); // Begin Window
+          ImGui::Text("%s", ls0);
+          if (ImGui::BeginTable("table1", 4)) // Begin Table
+          {
+            for(auto c : contacts->m_contacts)
+              {
+                  ImGui::TableNextRow();
+                  for (int column = 0; column < 4; column++)
+                  {
+                      ImGui::TableSetColumnIndex(column);
+                      if(column == 0)
+                      {
+                        ImGui::Text("%s", &c->m_first_name);
+                      }
+                      if(column == 1)
+                      {
+                        ImGui::Text("%s", &c->m_last_name);
+                      }
+                      if(column == 2)
+                      {
+                        ImGui::Text("%s", &c->m_phone);
+                      }
+                      if(column == 3)
+                      {
+                        ImGui::Text("%s", &c->m_email);
+                      }
+                  }
+              }
+              ImGui::EndTable();
+          } // End Table
+
+
+          ImGui::End(); // End Window
         }
 
 
