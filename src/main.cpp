@@ -95,6 +95,15 @@ int main(int, char**)
     //ImFont* font = io.Fonts->AddFontFromFileTTF("c:\\Windows\\Fonts\\ArialUni.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesJapanese());
     //IM_ASSERT(font != NULL);
 
+    static ContactManager* contacts = new ContactManager();
+    static Contact* foundContact = new Contact();
+
+    // Initialize contacts
+    if(contacts->m_contacts.empty())
+    {
+      contacts->init("contacts.txt");
+    }
+
     // Our state
     bool show_demo_window = true;
     bool show_another_window = false;
@@ -132,11 +141,13 @@ int main(int, char**)
         static char last[128] = "";
         static char num[128] = "";
         static char email[128] = "";
-        static ContactManager* contacts = new ContactManager();
+
+        static char find[128] = "";
+
 
         {
-          ImGui::Begin("My First Window!");
-          ImGui::Text("Hello, world!");
+          ImGui::Begin("Add / Search");
+          ImGui::Text("Add a new contact here...");
           ImGui::InputText("First Name", first, IM_ARRAYSIZE(first));
           ImGui::InputText("Last Name", last, IM_ARRAYSIZE(last));
           ImGui::InputText("Phone Number", num, IM_ARRAYSIZE(num));
@@ -153,51 +164,100 @@ int main(int, char**)
             strncpy(email, "", 128);
           }
 
+          ImGui::Text("Find Contact");
+          ImGui::InputText("Search first name", find, IM_ARRAYSIZE(find));
+          if (ImGui::Button("Find"))
+          {
+
+           
+            foundContact = contacts->findContact(find);
+
+            strncpy(find, "", 128);
+          }
+
           ImGui::End();
         }
-
-        static char ls0[1024] = "";
-        std::system("ls > test.txt");
-        std::ifstream fstream("test.txt");
-        if(fstream.is_open())
+        // Contacts Window
         {
-          fstream >> ls0;
-        }
-
-        {
-          ImGui::Begin("My Second Window!"); // Begin Window
-          ImGui::Text("%s", ls0);
-          if (ImGui::BeginTable("table1", 4)) // Begin Table
+          ImGui::Begin("Contacts"); // Begin Window
+          if (ImGui::BeginTable("table1", 5)) // Begin Table
           {
-            for(auto c : contacts->m_contacts)
-              {
-                  ImGui::TableNextRow();
-                  for (int column = 0; column < 4; column++)
-                  {
-                      ImGui::TableSetColumnIndex(column);
-                      if(column == 0)
-                      {
-                        ImGui::Text("%s", &c->m_first_name);
-                      }
-                      if(column == 1)
-                      {
-                        ImGui::Text("%s", &c->m_last_name);
-                      }
-                      if(column == 2)
-                      {
-                        ImGui::Text("%s", &c->m_phone);
-                      }
-                      if(column == 3)
-                      {
-                        ImGui::Text("%s", &c->m_email);
-                      }
-                  }
-              }
+            if(!contacts->m_contacts.empty())
+            {
+              for(int i = 0; i < contacts->m_contacts.size(); i++)
+                {
+                    ImGui::TableNextRow();
+                    for (int column = 0; column < 5; column++)
+                    {
+                        ImGui::TableSetColumnIndex(column);
+                        if(column == 0)
+                        {
+                          ImGui::Text("%s", &contacts->m_contacts[i]->m_first_name);
+                        }
+                        if(column == 1)
+                        {
+                          ImGui::Text("%s", &contacts->m_contacts[i]->m_last_name);
+                        }
+                        if(column == 2)
+                        {
+                          ImGui::Text("%s", &contacts->m_contacts[i]->m_phone);
+                        }
+                        if(column == 3)
+                        {
+                          ImGui::Text("%s", &contacts->m_contacts[i]->m_email);
+                        }
+                        if(column == 4)
+                        {
+                          ImGui::PushID(i);
+                          ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(0.0f, 0.6f, 0.6f));
+                          ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(0.0f, 0.7f, 0.7f));
+                          ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(0.0f, 0.8f, 0.8f));
+                          if(ImGui::Button("Delete"))
+                          {
+                            std::cout << "clicked" << std::endl;
+                            contacts->removeContact(contacts->m_contacts[i]);
+                          }
+                          ImGui::PopStyleColor(3);
+                          ImGui::PopID();
+                        }
+                    }
+                }
+            }
               ImGui::EndTable();
           } // End Table
 
 
           ImGui::End(); // End Window
+        }
+        // Search Window
+        {
+            ImGui::Begin("Search");
+            if (ImGui::BeginTable("table1", 4)) // Begin Table
+            {
+              ImGui::TableNextRow();
+                for (int column = 0; column < 4; column++)
+                {
+                    ImGui::TableSetColumnIndex(column);
+                    if(column == 0)
+                    {
+                      ImGui::Text("%s", &foundContact->m_first_name);
+                    }
+                    if(column == 1)
+                    {
+                      ImGui::Text("%s", &foundContact->m_last_name);
+                    }
+                    if(column == 2)
+                    {
+                      ImGui::Text("%s", &foundContact->m_phone);
+                    }
+                    if(column == 3)
+                    {
+                      ImGui::Text("%s", &foundContact->m_email);
+                    }
+                }
+                ImGui::EndTable();
+            }
+            ImGui::End();
         }
 
 

@@ -3,6 +3,7 @@ Contact.o
 ContactManager.cpp
 ContactManager.o
 Makefile
+contacts.txt
 imgui.cpp
 imgui.ini
 imgui.o
