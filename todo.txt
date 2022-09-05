@@ -1,0 +1,3 @@
+Remove contacts from hash map when deleting
+Add Edit function
+Add Save function 
