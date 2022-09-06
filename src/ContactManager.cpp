@@ -63,9 +63,16 @@ void ContactManager::removeContact(Contact* contact)
       it++;
     }
   }
-  for(auto c : m_contacts)
-  {
-    std::cout << c->m_first_name << std::endl;
-  }
 
+  for(auto it = m_contactBook.begin(); it != m_contactBook.end(); )
+  {
+    if(it->second == contact)
+    {
+      it = m_contactBook.erase(it);
+    }
+    else 
+    {
+      it++;
+    }
+  }
 }

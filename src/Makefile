@@ -11,19 +11,19 @@
 #   pacman -S mingw-w64-i686-SDL2
 #
 
-#CXX = g++
+CXX = g++
 #CXX = clang++
 
 EXE = program
-IMGUI_DIR = ./
+IMGUI_DIR = ../
 SOURCES = main.cpp
-SOURCES += $(IMGUI_DIR)/imgui.cpp $(IMGUI_DIR)/imgui_demo.cpp $(IMGUI_DIR)/imgui_draw.cpp $(IMGUI_DIR)/imgui_tables.cpp $(IMGUI_DIR)/imgui_widgets.cpp $(IMGUI_DIR)/Contact.cpp $(IMGUI_DIR)/ContactManager.cpp
-SOURCES += $(IMGUI_DIR)/imgui_impl_sdl.cpp $(IMGUI_DIR)/imgui_impl_opengl3.cpp
+SOURCES += $(IMGUI_DIR)/src/imgui.cpp $(IMGUI_DIR)/src/imgui_demo.cpp $(IMGUI_DIR)/src/imgui_draw.cpp $(IMGUI_DIR)/src/imgui_tables.cpp $(IMGUI_DIR)/src/imgui_widgets.cpp $(IMGUI_DIR)/src/Contact.cpp $(IMGUI_DIR)/src/ContactManager.cpp
+SOURCES += $(IMGUI_DIR)/src/imgui_impl_sdl.cpp $(IMGUI_DIR)/src/imgui_impl_opengl3.cpp
 OBJS = $(addsuffix .o, $(basename $(notdir $(SOURCES))))
 UNAME_S := $(shell uname -s)
 LINUX_GL_LIBS = -lGL
 
-CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/backends
+CXXFLAGS = -std=c++11 -I$(IMGUI_DIR) -I$(IMGUI_DIR)/include
 CXXFLAGS += -g -Wall -Wformat
 LIBS =
 
@@ -53,7 +53,7 @@ endif
 ifeq ($(UNAME_S), Darwin) #APPLE
 	ECHO_MESSAGE = "Mac OS X"
 	LIBS += -framework OpenGL -framework Cocoa -framework IOKit -framework CoreVideo `sdl2-config --libs`
-	LIBS += -L/usr/local/lib -L/opt/local/lib
+	LIBS += -L/usr/local/lib 
 
 	CXXFLAGS += `sdl2-config --cflags`
 	CXXFLAGS += -I/usr/local/include -I/opt/local/include
@@ -72,10 +72,10 @@ endif
 ## BUILD RULES
 ##---------------------------------------------------------------------
 
-%.o:%.cpp
+%.o: %.hpp %.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
-%.o:$(IMGUI_DIR)/%.cpp
+%.o: $(IMGUI_DIR)/%.hpp $(IMGUI_DIR)/%.cpp
 	$(CXX) $(CXXFLAGS) -c -o $@ $<
 
 %.o:$(IMGUI_DIR)/backends/%.cpp
