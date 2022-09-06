@@ -143,6 +143,7 @@ int main(int, char**)
         static char email[128] = "";
 
         static char find[128] = "";
+        static bool saved = false; 
 
 
         {
@@ -168,11 +169,29 @@ int main(int, char**)
           ImGui::InputText("Search first name", find, IM_ARRAYSIZE(find));
           if (ImGui::Button("Find"))
           {
-
-           
             foundContact = contacts->findContact(find);
 
             strncpy(find, "", 128);
+          }
+
+          ImGui::Text("Save Contacts");
+          if (ImGui::Button("Save"))
+          {
+
+            if(contacts->save("contacts.txt"))
+            {
+              saved = true;
+            }
+            else 
+            {
+              saved = false;
+            }
+          }
+
+          if(saved)
+          {
+            ImGui::SameLine();
+            ImGui::Text("Saved!");
           }
 
           ImGui::End();
@@ -280,4 +299,4 @@ int main(int, char**)
     SDL_Quit();
 
     return 0;
-}
+};

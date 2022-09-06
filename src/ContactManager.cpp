@@ -76,3 +76,22 @@ void ContactManager::removeContact(Contact* contact)
     }
   }
 }
+
+int ContactManager::save(const std::string& contacts)
+{
+  std::ofstream myfile(contacts);
+  if (myfile.is_open())
+  {
+    for(auto c : m_contacts)
+    {
+      myfile << c->m_first_name << ' '<< c->m_last_name << ' ' << c->m_phone << ' ' << c->m_email << std::endl;
+    }
+    myfile.close();
+    return 1;
+  }
+  else  
+  {
+    std::cout << "Unable to open file" << std::endl;
+    return 0;
+  }
+}

@@ -23,4 +23,6 @@ public:
   void removeContact(Contact* contact);
 
   void init(const std::string& contacts);
+
+  int save(const std::string& contacts);
 };
