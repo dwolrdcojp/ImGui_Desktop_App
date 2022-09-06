@@ -13,4 +13,6 @@ public:
 
   Contact(std::string first, std::string last, std::string phone, std::string email)
     : m_first_name(first), m_last_name(last), m_phone(phone), m_email(email) {}
+
+  void updateContact(std::string first, std::string last, std::string phone, std::string email);
 };

@@ -1,4 +1,4 @@
-Max Smith 800-999-9999 Max@example.com
+Jess Milton 800-999-9999 Max@example.com
 John Brown 800-999-9999 John@example.com
 Jerry Seinfeld 800-999-9999 Jerry@example.com
 Isaac Newton 800-999-9121 Isaac@example.com

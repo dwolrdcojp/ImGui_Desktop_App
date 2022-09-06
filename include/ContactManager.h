@@ -25,4 +25,5 @@ public:
   void init(const std::string& contacts);
 
   int save(const std::string& contacts);
+
 };

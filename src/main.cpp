@@ -249,29 +249,72 @@ int main(int, char**)
           ImGui::End(); // End Window
         }
         // Search Window
+        static char searchFirst[128] = "";
+        if(strlen(searchFirst)  == 0 && foundContact->m_first_name != "")
+        {
+          strncpy(searchFirst, foundContact->m_first_name.c_str(), 128);
+        }
+        static char searchLast[128] = "";
+        if(strlen(searchLast) == 0 && foundContact->m_last_name != "")
+        {
+          strncpy(searchLast, foundContact->m_last_name.c_str(), 128);
+        }
+        static char searchPhone[128] = "";
+        if(strlen(searchPhone) == 0 && foundContact->m_phone != "")
+        {
+          strncpy(searchPhone, foundContact->m_phone.c_str(), 128);
+        }
+        static char searchEmail[128] = "";
+        if(strlen(searchEmail) == 0 && foundContact->m_email != "")
+        {
+          strncpy(searchEmail, foundContact->m_email.c_str(), 128);
+        }
+
         {
             ImGui::Begin("Search");
-            if (ImGui::BeginTable("table1", 4)) // Begin Table
+            if (ImGui::BeginTable("table1", 5)) // Begin Table
             {
               ImGui::TableNextRow();
-                for (int column = 0; column < 4; column++)
+                for (int column = 0; column < 5; column++)
                 {
                     ImGui::TableSetColumnIndex(column);
                     if(column == 0)
                     {
-                      ImGui::Text("%s", &foundContact->m_first_name);
+                      ImGui::PushID(column);
+                      ImGui::InputText("##", searchFirst, IM_ARRAYSIZE(searchFirst));
+                      ImGui::PopID();
                     }
                     if(column == 1)
                     {
-                      ImGui::Text("%s", &foundContact->m_last_name);
+                      ImGui::PushID(column);
+                      ImGui::InputText("##", searchLast, IM_ARRAYSIZE(searchFirst));
+                      ImGui::PopID();
                     }
                     if(column == 2)
                     {
-                      ImGui::Text("%s", &foundContact->m_phone);
+                      ImGui::PushID(column);
+                      ImGui::InputText("##", searchPhone, IM_ARRAYSIZE(searchFirst));
+                      ImGui::PopID();
                     }
                     if(column == 3)
                     {
-                      ImGui::Text("%s", &foundContact->m_email);
+                      ImGui::PushID(column);
+                      ImGui::InputText("##", searchEmail, IM_ARRAYSIZE(searchFirst));
+                      ImGui::PopID();
+                    }
+                    if(column == 4)
+                    {
+                      ImGui::PushID(column);
+                      ImGui::PushStyleColor(ImGuiCol_Button, (ImVec4)ImColor::HSV(1/7.0f, 0.6f, 0.6f));
+                      ImGui::PushStyleColor(ImGuiCol_ButtonHovered, (ImVec4)ImColor::HSV(1/7.0f, 0.7f, 0.7f));
+                      ImGui::PushStyleColor(ImGuiCol_ButtonActive, (ImVec4)ImColor::HSV(1/7.0f, 0.8f, 0.8f));
+                      if(ImGui::Button("Update"))
+                      {
+                        std::cout << "clicked" << std::endl;
+                        foundContact->updateContact(searchFirst, searchLast, searchPhone, searchEmail);
+                      }
+                      ImGui::PopStyleColor(3);
+                      ImGui::PopID();
                     }
                 }
                 ImGui::EndTable();

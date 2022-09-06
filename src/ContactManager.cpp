@@ -1,4 +1,4 @@
-#include "../include/ContactManager.h"
+#include "../include/ContactManager.h" 
 #include <fstream>
 
 ContactManager::ContactManager()
@@ -44,7 +44,7 @@ Contact* ContactManager::findContact(std::string first_name)
   }
   else 
   {
-    Contact* contact = new Contact("Contact not found!", "", "", "");
+    Contact* contact = new Contact("", "", "", "");
     return contact;
   }
 }
@@ -95,3 +95,4 @@ int ContactManager::save(const std::string& contacts)
     return 0;
   }
 }
+
